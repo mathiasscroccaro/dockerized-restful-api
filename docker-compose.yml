@@ -1,0 +1,42 @@
+version: "3"
+
+services:
+
+  rest_api:
+    build: ./rest_api
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./rest_api:/rest_api
+    networks:
+      - postgres-compose-network
+
+  db:
+    image: postgres
+    environment:
+      POSTGRES_USERNAME: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+# ports will only be exposed inside docker
+#    ports:
+#      - "5432:5432"
+    volumes:
+      - ./db:/var/lib/postgresql/data
+    networks:
+      - postgres-compose-network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "postgres@email.com"
+      PGADMIN_DEFAULT_PASSWORD: "postgres"
+    ports:
+      - "15432:80"
+    volumes:
+      - ./pgadmin:/var/lib/pgadmin
+    networks:
+      - postgres-compose-network
+
+networks:
+  postgres-compose-network:
+    driver: bridge
+
